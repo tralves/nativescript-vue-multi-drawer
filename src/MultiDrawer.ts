@@ -91,16 +91,14 @@ export let defaultOptions = {
     }
 };
 
-
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 export type OptionsType = DeepPartial<typeof defaultOptions>;
 export interface MultiDrawerRefs {
     [key: string]: any;
     backDrop: NativeScriptVue<View>;
 }
-export function updateDefaultOptions(options:OptionsType)
-{
-    defaultOptions = mergeOptions(defaultOptions, options)
+export function updateDefaultOptions(options: OptionsType) {
+    defaultOptions = mergeOptions(defaultOptions, options);
 }
 
 @Component({})
@@ -165,21 +163,40 @@ export default class MultiDrawer extends Vue {
 
     get computedSidesEnabled() {
         const validSides = Object.keys(this.sides);
-        return Object.keys(this.$slots).filter(slotName => validSides.indexOf(slotName) !== -1 && this.optionsInternal[slotName].enabled);
+        return Object.keys(this.$slots).filter(
+            slotName =>
+                validSides.indexOf(slotName) !== -1 &&
+                this.optionsInternal[slotName].enabled
+        );
     }
     get computedDrawerStyle() {
         return side => {
-            const isOpened = this.sides[side].open || this.optionsInternal[side].fixed || !this.sides[side].invisible;
+            const isOpened =
+                this.sides[side].open ||
+                this.optionsInternal[side].fixed ||
+                !this.sides[side].invisible;
             const isVisible = isOpened || this.sides[side].invisible !== true;
             // console.log('computedDrawerStyle', side, this.sides[side].open, this.sides[side].translationOffset, this.sides[side].invisible, isVisible);
             return {
-                ...(isVisible ? {} : { transform: `translate${this.optionsInternal[side].axis}(${this.sides[side].translationOffset})` }),
+                ...(isVisible
+                    ? {}
+                    : {
+                        transform: `translate${
+                              this.optionsInternal[side].axis
+                          }(${this.sides[side].translationOffset})`
+                    }),
                 // transform: `translate${this.optionsInternal[side].axis}(${isOpened ? 0 : this.sides[side].translationOffset})`,
-                ...(this.optionsInternal[side].width ? { width: this.optionsInternal[side].width } : {}),
-                ...(this.optionsInternal[side].height ? { height: this.optionsInternal[side].height } : {}),
+                ...(this.optionsInternal[side].width
+                    ? { width: this.optionsInternal[side].width }
+                    : {}),
+                ...(this.optionsInternal[side].height
+                    ? { height: this.optionsInternal[side].height }
+                    : {}),
                 backgroundColor: this.optionsInternal[side].backgroundColor,
                 visibility: isVisible ? 'visible' : 'hidden',
-                [this.optionsInternal[side].axis === 'X' ? 'horizontalAlignment' : 'verticalAlignment']: side
+                [this.optionsInternal[side].axis === 'X'
+                    ? 'horizontalAlignment'
+                    : 'verticalAlignment']: side
             };
         };
     }
@@ -195,8 +212,12 @@ export default class MultiDrawer extends Vue {
                     height: this.optionsInternal[side].swipeOpenTriggerHeight
                 }
                 : {}),
-            [this.optionsInternal[side].axis === 'X' ? 'horizontalAlignment' : 'verticalAlignment']: side,
-            ...(this.optionsInternal.debug ? { backgroundColor: 'rgba(0, 255, 0, 0.3)' } : {}),
+            [this.optionsInternal[side].axis === 'X'
+                ? 'horizontalAlignment'
+                : 'verticalAlignment']: side,
+            ...(this.optionsInternal.debug
+                ? { backgroundColor: 'rgba(0, 255, 0, 0.3)' }
+                : {}),
             ...this.optionsInternal[side].swipeOpenTriggerProperties
         });
     }
@@ -205,11 +226,18 @@ export default class MultiDrawer extends Vue {
             if (!this.optionsInternal[side].canSwipeOpen) {
                 return false;
             }
-            return !(this.computedOpenSide || this.isPanning || this.isAnimating);
+            return !(
+                this.computedOpenSide ||
+                this.isPanning ||
+                this.isAnimating
+            );
         };
     }
     get computedOpenSide() {
-        return this.computedSidesEnabled.find(side => this.sides[side].open) || false;
+        return (
+            this.computedSidesEnabled.find(side => this.sides[side].open) ||
+            false
+        );
     }
     isSideOpened(side = null) {
         if (!side) {
@@ -221,7 +249,10 @@ export default class MultiDrawer extends Vue {
     get computedLayout() {
         const options = this.optionsInternal;
 
-        const gridColumns = (options.left.fixed ? 'auto,' : '') + '*' + (options.right.fixed ? ', auto' : '');
+        const gridColumns =
+            (options.left.fixed ? 'auto,' : '') +
+            '*' +
+            (options.right.fixed ? ', auto' : '');
 
         const layout = {
             grid: {
@@ -235,7 +266,8 @@ export default class MultiDrawer extends Vue {
                 col: 0
             },
             right: {
-                col: (options.left.fixed ? 1 : 0) + (options.right.fixed ? 1 : 0)
+                col:
+                    (options.left.fixed ? 1 : 0) + (options.right.fixed ? 1 : 0)
             },
             top: {
                 col: options.left.fixed ? 1 : 0
@@ -256,7 +288,9 @@ export default class MultiDrawer extends Vue {
     async open(side = null, animationFactor = 1) {
         if (!side) {
             if (!this.computedSidesEnabled.length) {
-                throw new Error('No sides are enabled, at least one side must be enabled to open the drawer');
+                throw new Error(
+                    'No sides are enabled, at least one side must be enabled to open the drawer'
+                );
             }
             side = this.computedSidesEnabled[0];
         }
@@ -275,7 +309,9 @@ export default class MultiDrawer extends Vue {
         this.sides[side].invisible = false;
         if (animationFactor !== 0) {
             this.isAnimating = true;
-            const duration = this.optionsInternal[side].animation.openDuration * animationFactor;
+            const duration =
+                this.optionsInternal[side].animation.openDuration *
+                animationFactor;
 
             this.$refs.backDrop.nativeView.animate({
                 opacity: 1,
@@ -311,12 +347,20 @@ export default class MultiDrawer extends Vue {
 
         if (animationFactor !== 0) {
             this.isAnimating = true;
-            const duration = this.optionsInternal[side].animation.closeDuration * animationFactor;
+            const duration =
+                this.optionsInternal[side].animation.closeDuration *
+                animationFactor;
 
             this.$refs[`${side}Drawer`][0].nativeView.animate({
                 translate: {
-                    x: this.optionsInternal[side].axis === 'X' ? this.sides[side].translationOffset : 0,
-                    y: this.optionsInternal[side].axis === 'Y' ? this.sides[side].translationOffset : 0
+                    x:
+                        this.optionsInternal[side].axis === 'X'
+                            ? this.sides[side].translationOffset
+                            : 0,
+                    y:
+                        this.optionsInternal[side].axis === 'Y'
+                            ? this.sides[side].translationOffset
+                            : 0
                 },
                 duration
             });
@@ -337,7 +381,11 @@ export default class MultiDrawer extends Vue {
         const view = this.$refs[`${side}Drawer`][0].nativeView;
         this.sides[side].translationOffset =
             this.optionsInternal[side].translationOffsetMultiplier *
-            utils.layout.toDeviceIndependentPixels(this.optionsInternal[side].axis === 'X' ? view.getMeasuredWidth() : view.getMeasuredHeight());
+            utils.layout.toDeviceIndependentPixels(
+                this.optionsInternal[side].axis === 'X'
+                    ? view.getMeasuredWidth()
+                    : view.getMeasuredHeight()
+            );
     }
     onBackDropPan(args) {
         // console.log('onBackDropPan', this.computedOpenSide, this.isPanning, this.isAnimating);
@@ -380,11 +428,23 @@ export default class MultiDrawer extends Vue {
             // panning
 
             if (this.optionsInternal[side].axis === 'X') {
-                this.constrainX(view, side, view.translateX + (args.deltaX - this.prevDeltaX));
-                panProgress = Math.abs(view.translateX) / Math.abs(this.sides[side].translationOffset);
+                this.constrainX(
+                    view,
+                    side,
+                    view.translateX + (args.deltaX - this.prevDeltaX)
+                );
+                panProgress =
+                    Math.abs(view.translateX) /
+                    Math.abs(this.sides[side].translationOffset);
             } else {
-                this.constrainY(view, side, view.translateY + (args.deltaY - this.prevDeltaY));
-                panProgress = Math.abs(view.translateY) / Math.abs(this.sides[side].translationOffset);
+                this.constrainY(
+                    view,
+                    side,
+                    view.translateY + (args.deltaY - this.prevDeltaY)
+                );
+                panProgress =
+                    Math.abs(view.translateY) /
+                    Math.abs(this.sides[side].translationOffset);
             }
 
             this.prevDeltaX = args.deltaX;
@@ -403,14 +463,27 @@ export default class MultiDrawer extends Vue {
                 } else {
                     distanceFromFullyOpen = Math.abs(view.translateY);
                 }
-                if (distanceFromFullyOpen > this.optionsInternal[side].swipeCloseTriggerMinDrag) {
-                    this.close(side, 1 - distanceFromFullyOpen / Math.abs(this.sides[side].translationOffset));
+                if (
+                    distanceFromFullyOpen >
+                    this.optionsInternal[side].swipeCloseTriggerMinDrag
+                ) {
+                    this.close(
+                        side,
+                        1 -
+                            distanceFromFullyOpen /
+                                Math.abs(this.sides[side].translationOffset)
+                    );
                 } else {
-                    this.open(side, distanceFromFullyOpen / Math.abs(this.sides[side].translationOffset));
+                    this.open(
+                        side,
+                        distanceFromFullyOpen /
+                            Math.abs(this.sides[side].translationOffset)
+                    );
                 }
             } else {
                 const offsetAbs = Math.abs(this.sides[side].translationOffset);
-                const multiplier = this.optionsInternal[side].translationOffsetMultiplier;
+                const multiplier = this.optionsInternal[side]
+                    .translationOffsetMultiplier;
                 let distanceFromEdge = 0;
                 if (this.optionsInternal[side].axis === 'X') {
                     distanceFromEdge = offsetAbs - multiplier * view.translateX;
@@ -418,10 +491,22 @@ export default class MultiDrawer extends Vue {
                     distanceFromEdge = offsetAbs - multiplier * view.translateY;
                 }
 
-                if (distanceFromEdge < this.optionsInternal[side].swipeOpenTriggerMinDrag) {
-                    this.close(side, distanceFromEdge / Math.abs(this.sides[side].translationOffset));
+                if (
+                    distanceFromEdge <
+                    this.optionsInternal[side].swipeOpenTriggerMinDrag
+                ) {
+                    this.close(
+                        side,
+                        distanceFromEdge /
+                            Math.abs(this.sides[side].translationOffset)
+                    );
                 } else {
-                    this.open(side, 1 - distanceFromEdge / Math.abs(this.sides[side].translationOffset));
+                    this.open(
+                        side,
+                        1 -
+                            distanceFromEdge /
+                                Math.abs(this.sides[side].translationOffset)
+                    );
                 }
             }
 
