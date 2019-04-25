@@ -1,11 +1,11 @@
 import Vue from "nativescript-vue";
 import App from "./components/App";
-import VueDevtools from "nativescript-vue-devtools";
+// import VueDevtools from "nativescript-vue-devtools";
 import MultiDrawer from "nativescript-vue-multi-drawer";
 
-if (TNS_ENV !== "production") {
-  Vue.use(VueDevtools);
-}
+// if (TNS_ENV !== "production") {
+//   Vue.use(VueDevtools);
+// }
 
 Vue.use(MultiDrawer, {
   // override any option here

@@ -173,7 +173,7 @@ module.exports = env => {
                     use: [
                         'nativescript-dev-webpack/style-hot-loader',
                         'nativescript-dev-webpack/apply-css-loader.js',
-                        { loader: "css-loader", options: { minimize: false, url: false } },
+                        { loader: "css-loader", options: { url: false } },
                     ],
                 },
                 {
@@ -181,7 +181,7 @@ module.exports = env => {
                     use: [
                         'nativescript-dev-webpack/style-hot-loader',
                         'nativescript-dev-webpack/apply-css-loader.js',
-                        { loader: "css-loader", options: { minimize: false, url: false } },
+                        { loader: "css-loader", options: { url: false } },
                         "sass-loader",
                     ],
                 },
@@ -208,7 +208,7 @@ module.exports = env => {
                 "TNS_ENV": JSON.stringify(mode)
             }),
             // Remove all files from the out dir.
-            new CleanWebpackPlugin([`${dist}/**/*`]),
+            new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [`${dist}/**/*`] }),
             // Copy native app resources to out dir.
             new CopyWebpackPlugin([{
                 from: `${appResourcesFullPath}/${appResourcesPlatformDir}`,
