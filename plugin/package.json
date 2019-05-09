@@ -1,0 +1,25 @@
+{
+    "name": "nativescript-vue-multi-drawer",
+    "version": "0.0.2",
+    "description": "A NativeScript-Vue component for creating multiple side drawers",
+    "main": "main.js",
+    "typings": "plugin.d.ts",
+    "keywords": [
+      "nativescript",
+      "nativescript-vue",
+      "drawer",
+      "sidedrawer",
+      "multi",
+      "multiple"
+    ],
+    "author": "Igor Randjelovic",
+    "license": "MIT",
+    "dependencies": {
+      "vue-property-decorator": "^8.1.0",
+      "merge-options": "^1.0.1"
+    },
+    "peerDependencies": {
+      "tns-core-modules": "*"
+    }
+  }
+  
